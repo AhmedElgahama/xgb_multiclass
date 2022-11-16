@@ -21,15 +21,15 @@ library(caTools)
 library(imputeTS)
 options(dplyr.summarise.inform = FALSE)
 
-source('algorithm/0.common_funcs.R')
+source('opt/ml_vol/algorithm/0.common_funcs.R')
 
 
 ## read jsonfile
 
 
-schema <- glue('inputs/data_config/',list.files(path="inputs/data_config"))
+schema <- glue('opt/ml_vol/inputs/data_config/',list.files(path="opt/ml_vol/inputs/data_config"))
 
-data   <- glue('inputs/data/training/binaryClassificationBaseMainInput/',list.files(path="inputs/data/training/binaryClassificationBaseMainInput"))
+data   <- glue('opt/ml_vol/inputs/data/training/binaryClassificationBaseMainInput/',list.files(path="opt/ml_vol/inputs/data/training/binaryClassificationBaseMainInput"))
 
 
 trainer <- function(schema_path,data_path)
@@ -141,7 +141,7 @@ trainer <- function(schema_path,data_path)
   trained_model$variables_to_encode <- variables_to_encode
   trained_model$encodings <- encodings
   trained_model$best_params %>% as.data.frame() %>% print()
-  trained_model %>% write_rds('model/artifacts/model.rds')
+  trained_model %>% write_rds('opt/ml_vol/model/artifacts/model.rds')
   
 }
 

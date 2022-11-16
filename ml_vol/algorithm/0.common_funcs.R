@@ -65,13 +65,14 @@ coverager <- function(preds, actual_binary) {
 trainer_func <- function(train_set, 
                          validation_set, 
                          explanatory_variables, 
-                         target_variable, 
+                         target_variable,
+                         hypergrid,
                          target_variable_mapping = NULL) 
 {
-  hypergrid <- expand_grid(eta       = 0.1,
-                           max_depth = 4,
-                           nrounds   = 1000,
-                           auc       = 0)
+  # hypergrid <- expand_grid(eta       = 0.1,
+  #                          max_depth = 4,
+  #                          nrounds   = 1000,
+  #                          auc       = 0)
   
   print(glue('Hyperparameter tuning begins...'))
   tic('Hyperparameter tuning ends...')

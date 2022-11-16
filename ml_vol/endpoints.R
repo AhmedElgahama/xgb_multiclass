@@ -1,5 +1,6 @@
 
 
+## Example for testing
 # test_json_string <-
 #   '{
 #       "gender" : "Male" ,
@@ -24,14 +25,7 @@
 # }'
 
 
-
-
-
-
-
-
-
-
+## ---- Initialising libraries ----
 suppressWarnings(suppressMessages(library(tidyverse)))
 suppressWarnings(suppressMessages(library(lubridate)))
 suppressWarnings(suppressMessages(library(data.table)))
@@ -39,7 +33,7 @@ suppressWarnings(suppressMessages(library(xgboost)))
 suppressWarnings(suppressMessages(library(httr)))
 suppressWarnings(suppressMessages(library(glue)))
 
-
+## Load model
 trained_model  <- read_rds('model/artifacts/model.rds')
 encode_these   <- trained_model$variables_to_encode
 target_class          <- trained_model$target_class
@@ -50,16 +44,13 @@ threshold <- 0.50
 
 
 
-prediction_scorer <- function(customer) {
-  
-  
-  
+prediction_scorer <- function(row) {
+  ## Function to get data and return probability
   
   ## initialize scores
   score  <- 0
   
-  ## accept or reject
-  
+  ## Encode categorical features with number of training encoding
   encodings_tmp <-
     trained_model$encodings %>%
     map(function(x) {
@@ -70,75 +61,73 @@ prediction_scorer <- function(customer) {
       }
     })
   for (catvar in encode_these) {
-    customer[[catvar]] <-
-      encodings_tmp[[catvar]][customer[[catvar]] %>% as.character()]
+    row[[catvar]] <-
+      encodings_tmp[[catvar]][row[[catvar]] %>% as.character()]
   }
   
+  ## Getting probability
+  score <-
+    predict(trained_model$mdl,
+            data.matrix(row %>% select(
+              all_of(trained_model$mdl$feature_names)
+            )))
   
-  score <- 
-    predict(trained_model$mdl, 
-            data.matrix(customer %>% select(all_of(trained_model$mdl$feature_names))))
-  
-  
+  ## return prediction
   score
 }
 
 
 
 
-#* @post /predict
+#* @post /infer
 function(req) {
-# caller = function(req) {
-  
-  ## grab the request body 'req' and put it into the variable 'customer'
-  customer <- jsonlite::fromJSON(req$postBody) %>% as_tibble()
-  # customer <- jsonlite::fromJSON(req) %>% as_tibble()
-  customer %>% glimpse()
+  ## grab the request body 'req' and put it into the variable 'row'
+  row <- jsonlite::fromJSON(req$postBody) %>% as_tibble()
+  row %>% glimpse()
   
   ## placeholder for JSON string to be printed at the end
   result <-
-    tibble(prediction_prob = 0,
-           prediction_label = '',
-           warnings = '')
+    tibble(
+      prediction_prob = 0,
+      prediction_label = '',
+      warnings = ''
+    )
   
   ## parameters that we need
   necessary_params <- trained_model$mdl$feature_names
   
   ## if we do NOT have all we need...
-  if (!all(necessary_params %in% names(customer))) {
-    
-    
+  if (!all(necessary_params %in% names(row))) {
     result$prediction_prob <- 0
     result$prediction_label <- ''
     result$warnings <- 'Some necessary features are missing'
     
   } else {
-    
     ## keep only the necessary parameters
-    customer <- customer[necessary_params]
+    row <- row[necessary_params]
     
     ## if any of the necessary parameters are null...
-    if (customer %>% sapply(is.null) %>% any()) {
-      
+    if (row %>% sapply(is.null) %>% any()) {
       result$prediction_prob <- 0.55
       result$prediction_label <- 'UNCOVERED'
       result$warnings <-
-          paste('The following required parameters were NULL:', null_parameters)
+        paste('The following required parameters were NULL:',
+              null_parameters)
       
     } else {
-      
-      print('all features are here')
-      prediction_result <- prediction_scorer(customer)
+      prediction_result <- prediction_scorer(row)
       print(prediction_result)
-      print('prediction_result')
       result$prediction_prob  <- prediction_result %>% round(5)
-      result$prediction_label <- if_else(prediction_result >= 0.5 , get("target_class"), get("other_class"))
+      result$prediction_label <-
+        if_else(prediction_result >= 0.5 ,
+                get("target_class"),
+                get("other_class"))
     }
     
   }
   
-  c(result$prediction_prob, 
-    result$prediction_label, 
+  c(result$prediction_prob,
+    result$prediction_label,
     result$warnings)
 }
 
@@ -146,12 +135,8 @@ function(req) {
 
 
 
-#* @get /healthz
+#* @get /ping
 #* @serializer json list(auto_unbox=TRUE)
 endpoint.healthz <- function(req) {
   return("it's working perfectly")
 }
-
-
-
-
