@@ -79,7 +79,6 @@ tester <- function(data_path)
   ## Saving ids with prediction
   predictions <- cbind(id, tmp)
   predictions %>% write.csv('/opt/ml_vol/outputs/testing_outputs/test_predictions.csv')
-  
 }
 
 

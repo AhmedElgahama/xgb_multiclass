@@ -39,13 +39,13 @@ data   <-
   )
 
 ## Get the hyperparameters file
-hpt   <-
-  glue(
-    '/opt/ml_vol/model/model_config/',
-    list.files(path = "/opt/ml_vol/model/model_config/")
-  )
+# hpt   <-
+#   glue(
+#     '/opt/ml_vol/model/model_config/',
+#     list.files(path = "/opt/ml_vol/model/model_config/")
+#   )
 
-trainer <- function(schema_path, data_path,hpt_path)
+trainer <- function(schema_path, data_path)
 {
   
   
@@ -173,6 +173,8 @@ trainer <- function(schema_path, data_path,hpt_path)
       colnames(df_train) %>% str_replace('_target_encoded$', '')
     colnames(df_val) <-
       colnames(df_val) %>% str_replace('_target_encoded$', '')
+  } else{
+    encodings <- NULL
   }
   ## Training model model
   ## The return of the function is list with model
@@ -200,4 +202,4 @@ trainer <- function(schema_path, data_path,hpt_path)
 }
 
 
-trainer(schema, data,hpt)
+trainer(schema, data)
