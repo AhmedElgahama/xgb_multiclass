@@ -26,7 +26,7 @@ source('algorithm/0.common_funcs.R')
 ## Get the training data file
 data   <-
   glue(
-    'inputs/data/testing/binaryClassificationBaseMainInput/',
+    '/opt/ml_vol/inputs/data/testing/binaryClassificationBaseMainInput/',
     list.files(path = "inputs/data/testing/binaryClassificationBaseMainInput")
   )
 
@@ -35,7 +35,7 @@ data   <-
 tester <- function(data_path)
 {
   ## Load model and test data
-  trained_model         <- read_rds('model/artifacts/model.rds')
+  trained_model         <- read_rds('/opt/ml_vol/model/artifacts/model.rds')
   variables_to_encode   <- trained_model$variables_to_encode
   target_class          <- trained_model$target_class
   other_class           <- trained_model$other_class
@@ -78,7 +78,7 @@ tester <- function(data_path)
   
   ## Saving ids with prediction
   predictions <- cbind(id, tmp)
-  predictions %>% write.csv('outputs/testing_outputs/test_predictions.csv')
+  predictions %>% write.csv('/opt/ml_vol/outputs/testing_outputs/test_predictions.csv')
   
 }
 

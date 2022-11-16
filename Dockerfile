@@ -23,12 +23,12 @@ RUN R -e \
         repos = 'http://cran.us.r-project.org' \
     )"
 
+COPY app ./opt/app
 COPY ml_vol ./opt/ml_vol
+WORKDIR /opt/app
 
-WORKDIR /opt/ml_vol
 
-
-ENV PATH="/opt/ml_vol:${PATH}"
+ENV PATH="/opt/app:${PATH}"
 
 RUN chmod +x train &&\
     chmod +x test &&\
