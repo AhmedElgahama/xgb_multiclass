@@ -50,24 +50,24 @@ trainer <- function(schema_path, data_path,hpt_path)
   
   
   ## Reading model hyperparameters
-  hpt <- fromJSON(file = hpt_path)
+  # hpt <- fromJSON(file = hpt_path)
   
   eta_p       = 0.3
   max_depth_p = 5
   nrounds_p   = 1000
-  for (hp in hpt$parameters)
-  {
-    if (hp['name'] == 'nrounds')
-    {
-      nrounds_p   <- hp[['default']]
-    } else if (hp['name'] == 'eta')
-    {
-      eta_p       <- hp[['default']]
-    } else if (hp['name'] == 'max_depth')
-    {
-      max_depth_p <- hp[['default']]
-    }
-  }
+  # for (hp in hpt$parameters)
+  # {
+  #   if (hp['name'] == 'nrounds')
+  #   {
+  #     nrounds_p   <- hp[['default']]
+  #   } else if (hp['name'] == 'eta')
+  #   {
+  #     eta_p       <- hp[['default']]
+  #   } else if (hp['name'] == 'max_depth')
+  #   {
+  #     max_depth_p <- hp[['default']]
+  #   }
+  # }
   
   
   hypergrid <- expand_grid(
@@ -161,16 +161,19 @@ trainer <- function(schema_path, data_path,hpt_path)
     df_train %>% mutate(y = my_map[unlist(label)] %>% as.logical())
   df_val   <-
     df_val   %>% mutate(y = my_map[unlist(label)] %>% as.logical())
-  c(df_train, df_val, dummy, encodings) %<-% target_encode_these(df_train, df_val, variables_to_encode)
-  df_train <-
-    df_train %>% select(-y) %>% filter_if(is.numeric, ~ !is.infinite(.))
-  df_val   <-
-    df_val   %>% select(-y) %>% filter_if(is.numeric, ~ !is.infinite(.))
-  colnames(df_train) <-
-    colnames(df_train) %>% str_replace('_target_encoded$', '')
-  colnames(df_val) <-
-    colnames(df_val) %>% str_replace('_target_encoded$', '')
   
+  if(length(variables_to_encode) != 0)
+  {
+    c(df_train, df_val, dummy, encodings) %<-% target_encode_these(df_train, df_val, variables_to_encode)
+    df_train <-
+      df_train %>% select(-y) %>% filter_if(is.numeric, ~ !is.infinite(.))
+    df_val   <-
+      df_val   %>% select(-y) %>% filter_if(is.numeric, ~ !is.infinite(.))
+    colnames(df_train) <-
+      colnames(df_train) %>% str_replace('_target_encoded$', '')
+    colnames(df_val) <-
+      colnames(df_val) %>% str_replace('_target_encoded$', '')
+  }
   ## Training model model
   ## The return of the function is list with model
   trained_model <-

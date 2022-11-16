@@ -69,10 +69,6 @@ trainer_func <- function(train_set,
                          hypergrid,
                          target_variable_mapping = NULL) 
 {
-  # hypergrid <- expand_grid(eta       = 0.1,
-  #                          max_depth = 4,
-  #                          nrounds   = 1000,
-  #                          auc       = 0)
   
   print(glue('Hyperparameter tuning begins...'))
   tic('Hyperparameter tuning ends...')
@@ -275,7 +271,7 @@ target_encode_these <-
     for (my_var in variables_to_encode) {
       c(df_train_acc_rej,
         df_val_acc_rej,
-        df_val_acc_rej2,
+        dummmy_var,
         encodings[[my_var]]) %<-% general_purpose_encoder(df_train_acc_rej,
                                                           df_val_acc_rej,
                                                           df_val_acc_rej,
@@ -285,7 +281,7 @@ target_encode_these <-
     return(list(
       df_train_acc_rej,
       df_val_acc_rej,
-      df_val_acc_rej2,
+      dummmy_var,
       encodings
     ))
   }

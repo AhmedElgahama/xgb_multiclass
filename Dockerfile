@@ -24,7 +24,6 @@ RUN R -e \
     )"
 
 COPY app ./opt/app
-COPY ml_vol ./opt/ml_vol
 WORKDIR /opt/app
 
 
