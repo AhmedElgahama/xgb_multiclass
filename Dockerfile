@@ -16,7 +16,13 @@ RUN R -e \
         c('plumber'), \
         repos = 'http://cran.us.r-project.org' \
     )"
-
+    
+RUN R -e \
+    "install.packages( \
+        c('xgboost'), \
+        repos = 'http://cran.us.r-project.org' \
+    )"
+    
 RUN R -e \
     "install.packages( \
         readLines('requirements.txt'), \

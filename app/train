@@ -198,8 +198,17 @@ trainer <- function(schema_path, data_path)
   trained_model$encodings <- encodings
   trained_model$best_params %>% as.data.frame() %>% print()
   trained_model %>% write_rds('/opt/ml_vol/model/artifacts/model.rds')
-  
 }
 
+tryCatch(               
+  
+  # Specifying expression
+  expr = {                     
+    trainer(schema, data)
+  },
+  # Specifying error message
+  error = function(e){         
+    write(e %>% as.character(),file="/opt/ml_vol/outputs/errors/train_failure.txt",append=FALSE)
+  }
+)
 
-trainer(schema, data)

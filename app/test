@@ -27,7 +27,7 @@ source('algorithm/0.common_funcs.R')
 data   <-
   glue(
     '/opt/ml_vol/inputs/data/testing/binaryClassificationBaseMainInput/',
-    list.files(path = "inputs/data/testing/binaryClassificationBaseMainInput")
+    list.files(path = "/opt/ml_vol/inputs/data/testing/binaryClassificationBaseMainInput")
   )
 
 
@@ -71,16 +71,28 @@ tester <- function(data_path)
   
   test_results <- test_results$test_predictions
   
-  ## Converting probability to label
-  tmp <-
-    test_results %>%
-    mutate(pred = if_else(pred > 0.5, get("target_class"), get("other_class")))
+  test_results <-
+    test_results %>% 
+    mutate(x = 1-pred)
+  
+  names(test_results)[names(test_results) == 'pred'] <- get("target_class")
+  names(test_results)[names(test_results) == 'x'] <- get("other_class")
   
   ## Saving ids with prediction
-  predictions <- cbind(id, tmp)
+  predictions <- cbind(id, test_results)
   predictions %>% write.csv('/opt/ml_vol/outputs/testing_outputs/test_predictions.csv')
 }
 
 
 
-tester(data)
+tryCatch(               
+  
+  # Specifying expression
+  expr = {                     
+    tester(data)
+  },
+  # Specifying error message
+  error = function(e){         
+    write(e %>% as.character(),file="/opt/ml_vol/outputs/errors/test_failure.txt",append=FALSE)
+  }
+)
