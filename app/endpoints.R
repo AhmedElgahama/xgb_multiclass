@@ -133,7 +133,7 @@ function(req) {
     result$predicted_class,
     result$warnings)
 }
-
+}
 
 
 
