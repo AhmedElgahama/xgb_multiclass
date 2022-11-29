@@ -32,22 +32,7 @@ In the above exhibit, note the following:
 
 ## Data schema
 
-{
-    "problemCategory": "binary-classification-base",
-    "version": "1.0",
-    "inputDatasets": {
-      "binaryClassificationBaseMainInput": {
-        "idField": "id",
-        "targetField": "target_class",
-        "targetClass": "class1",
-        "predictorFields": [
-          { "fieldName": "x1", "dataType": "NUMERIC" },
-          { "fieldName": "x2", "dataType": "NUMERIC" },
-          { "fieldName": "x3", "dataType": "CATEGORICAL" }
-        ]
-      }
-    }
-}
+![plot2](https://github.com/AhmedElgahama/test/blob/main/Capture2.PNG)
 
 ## Data preprocessing
 The data preprocessing step includes missing data imputation, target encoding for categorical variables, 
