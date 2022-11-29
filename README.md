@@ -23,7 +23,7 @@ docker run -v <mounted_ml_dir_on_host>:/opt/ml_vol --rm <image_name> test
 docker run -v <mounted_ml_dir_on_host>:/opt/ml_vol -p 8080:8080 --rm <image_name> serve
 
 ## Mounted volume for inputs and outputs
-![plot](https://drive.google.com/file/d/1vNuGfnwq_KPlTJFRP3HGKNBHJJlyXEJZ/view?usp=sharing)
+![plot](https://github.com/AhmedElgahama/test/blob/main/schema.PNG)
 
 In the above exhibit, note the following:
 * The file indicated as <data_config_file.json> is the schema file.
