@@ -1,3 +1,4 @@
+tidyverse
 tibble
 readr
 tidyr
