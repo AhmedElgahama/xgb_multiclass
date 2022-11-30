@@ -1,4 +1,4 @@
-FROM rocker/verse:latest
+FROM r-base:latest
 
 
 # Install dependencies
