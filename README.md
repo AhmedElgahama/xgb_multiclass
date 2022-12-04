@@ -17,7 +17,7 @@ this repo was built as per Ready Tensor specifications to
 docker run -v <mounted_ml_dir_on_host>:/opt/ml_vol --rm <image_name> train
 
 * when testing  ( directory of testing data , directory to load the model from)
-docker run -v <mounted_ml_dir_on_host>:/opt/ml_vol --rm <image_name> test
+docker run -v <mounted_ml_dir_on_host>:/opt/ml_vol --rm <image_name> predict
 
 * when serving  ( directory to load the model from)
 docker run -v <mounted_ml_dir_on_host>:/opt/ml_vol -p 8080:8080 --rm <image_name> serve
