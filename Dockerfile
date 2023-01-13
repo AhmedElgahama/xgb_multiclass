@@ -29,6 +29,7 @@ RUN chmod +x train
 RUN chmod +x predict
 RUN chmod +x serve
 
-# USER 1001
+RUN chown -R 1000:1000 /opt/app/  
+USER 1000
 
 
