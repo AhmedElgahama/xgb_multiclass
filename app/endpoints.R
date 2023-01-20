@@ -151,7 +151,7 @@ prediction_scorer <- function(row) {
 function(req) {
 # pred <- function(req) {
   ## grab the request body 'req' and put it into the variable 'row'
-  row <- jsonlite::fromJSON(req$postBody) %>% as_tibble()
+  row <- jsonlite::fromJSON(req$postBody)$instances %>% as_tibble()
   # row <- jsonlite::fromJSON(req) %>% as_tibble()
   row %>% glimpse()
   
