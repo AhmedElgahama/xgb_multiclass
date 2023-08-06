@@ -102,7 +102,7 @@ suppressWarnings(suppressMessages(library(httr)))
 suppressWarnings(suppressMessages(library(glue)))
 
 ## Load model
-trained_model  <- read_rds('/opt/ml_vol/model/artifacts/model.rds')
+trained_model  <- read_rds('/opt/model_inputs_outputs/model/artifacts/model.rds')
 encode_these   <- trained_model$variables_to_encode
 target_class          <- trained_model$target_class
 other_class           <- trained_model$other_class
