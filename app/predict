@@ -78,7 +78,7 @@ tester <- function(data_path)
   
   ## Saving ids with prediction
   predictions <- cbind(id, test_results)
-  predictions %>% write.csv('/opt/model_inputs_outputs/outputs/testing_outputs/test_predictions.csv', row.names=FALSE)
+  predictions %>% write.csv('/opt/model_inputs_outputs/outputs/predictions/test_predictions.csv', row.names=FALSE)
 }
 
 
