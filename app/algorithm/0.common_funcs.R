@@ -16,7 +16,11 @@ trainer_func <- function(train_set,
                          validation_set, 
                          explanatory_variables, 
                          target_variable,
+                         train_labels,
+                         val_labels,
                          hypergrid,
+                         num_class,
+                         species,
                          target_variable_mapping = NULL) 
 {
   
@@ -24,26 +28,38 @@ trainer_func <- function(train_set,
   tic('Hyperparameter tuning ends...')
   best_val_AUC <- -1
   best_val_predictions <- NULL
+  train_set <- train_set %>% as.data.frame()
+  validation_set <- validation_set %>% as.data.frame()
   
   train_features <- train_set %>% select(all_of(explanatory_variables)) %>% data.matrix()
-  train_labels   <- train_set[[target_variable]]
+  # train_labels   <- train_set[[target_variable]]
   val_features   <- validation_set %>% select(all_of(explanatory_variables)) %>% data.matrix()
-  val_labels     <- validation_set[[target_variable]]
+  # val_labels     <- validation_set[[target_variable]]
   
   if (!is.null(target_variable_mapping)) {
     train_labels <- target_variable_mapping[unlist(train_labels)] %>% unname()
     val_labels   <- target_variable_mapping[unlist(val_labels)]   %>% unname()
   }
   
+  
+  params = list(
+    objective="multi:softprob",
+    eval_metric="mlogloss",
+    num_class=num_class
+  )
+  
+  
+  
   for (i in 1:nrow(hypergrid)) {
     xgb <- 
       xgb.train(
         data        = train_features %>% xgboost::xgb.DMatrix(label = train_labels),
+        params      = params,
         eta         = hypergrid[['eta']][i],
         max_depth   = hypergrid[['max_depth']][i],
         nrounds     = hypergrid[['nrounds']][i],
-        objective   = "binary:logistic",
-        eval_metric = 'auc',
+        # objective   = "multi:softprob",
+        # eval_metric = 'mlogloss',
         watchlist   = list(train = train_features %>% xgboost::xgb.DMatrix(label = train_labels),
                            test  = val_features   %>% xgboost::xgb.DMatrix(label = val_labels)),
         early_stopping_rounds = 30,
@@ -51,33 +67,43 @@ trainer_func <- function(train_set,
       )
     
     val_predictions <- predict(xgb, data.matrix(validation_set %>% select(all_of(explanatory_variables))))
-    suppressMessages({ hypergrid[['auc']][i] <- auc(roc(val_labels, val_predictions)) %>% as.numeric() })
+    val_predictions = predict(xgb,val_features,reshape=T)
+    val_predictions = as.data.frame(val_predictions)
+    colnames(val_predictions) = levels(species)
     
-    print(glue("[{now()}]  eta={hypergrid[['eta']][i]}, max_depth={hypergrid[['max_depth']][i]}, nrounds={xgb$best_iteration}, auc={hypergrid[['auc']][i] %>% round(4)}"))
-    hypergrid[['nrounds']][i] <- xgb$best_iteration
     
-    if (best_val_AUC < hypergrid[['auc']][i]) {
-      best_val_AUC         <- hypergrid[['auc']][i]
-      best_val_predictions <- val_predictions
-    }
+    val_predictions$prediction = apply(val_predictions,1,function(x) colnames(val_predictions)[which.max(x)])
+    val_predictions$label = levels(species)[val_labels+1]
+    
+    
+    # suppressMessages({ hypergrid[['auc']][i] <- auc(roc(val_labels, val_predictions)) %>% as.numeric() })
+    # 
+    # print(glue("[{now()}]  eta={hypergrid[['eta']][i]}, max_depth={hypergrid[['max_depth']][i]}, nrounds={xgb$best_iteration}, auc={hypergrid[['auc']][i] %>% round(4)}"))
+    # hypergrid[['nrounds']][i] <- xgb$best_iteration
+    # 
+    # if (best_val_AUC < hypergrid[['auc']][i]) {
+    #   best_val_AUC         <- hypergrid[['auc']][i]
+    #   best_val_predictions <- val_predictions
+    # }
     
   }
-  best_params <-
-    hypergrid %>%
-    arrange(desc(auc)) %>%
-    head(1) %>%
-    as.list()
+  # best_params <-
+  #   hypergrid %>%
+  #   arrange(desc(auc)) %>%
+  #   head(1) %>%
+  #   as.list()
   toc()
   
   
   stuff <- list()
   stuff$mdl <- xgb
-  stuff$hypergrid <- hypergrid
-  stuff$best_params <- best_params
+  # stuff$hypergrid <- hypergrid
+  # stuff$best_params <- best_params
   stuff$val_pred_vs_actual <-
-    tibble(pred = best_val_predictions,
-           actual = val_labels) %>%
-    mutate(actual_aux = validation_set[[target_variable]] %>% as.character() %>% paste(actual))
+    tibble(pred = val_predictions,
+           actual = val_labels) #%>%
+    # mutate(actual_aux = validation_set[[target_variable]] %>% as.character() %>% paste(actual)
+           # )
   
   return(stuff)
 }
