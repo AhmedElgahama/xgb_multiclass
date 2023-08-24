@@ -262,6 +262,10 @@ trainer <- function(schema_path, data_path)
   trained_model$variables_to_encode <- variables_to_encode
   trained_model$encodings <- encodings
   # trained_model$best_params %>% as.data.frame() %>% print()
+
+  print("*"*50)  
+  print("*"*50)
+
   trained_model %>% write_rds('/opt/model_inputs_outputs/model/artifacts/model.rds')
 }
 
