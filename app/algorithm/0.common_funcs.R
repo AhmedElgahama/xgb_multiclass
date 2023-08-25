@@ -15,7 +15,6 @@ options(dplyr.summarise.inform = FALSE)
 trainer_func <- function(train_set, 
                          validation_set, 
                          explanatory_variables, 
-                         target_variable,
                          train_labels,
                          val_labels,
                          hypergrid,
@@ -66,7 +65,7 @@ trainer_func <- function(train_set,
         verbose     = 0
       )
     
-    val_predictions <- predict(xgb, data.matrix(validation_set %>% select(all_of(explanatory_variables))))
+    # val_predictions <- predict(xgb, data.matrix(validation_set %>% select(all_of(explanatory_variables))))
     val_predictions = predict(xgb,val_features,reshape=T)
     val_predictions = as.data.frame(val_predictions)
     colnames(val_predictions) = levels(species)
@@ -114,25 +113,40 @@ trainer_func <- function(train_set,
 
 
 
-tester_func <- function(mdl, test_set) {
+tester_func <- function(mdl, test_set,species) {
   
-  test_features <- test_set %>% select(all_of(mdl$feature_names))
+  
+  # val_predictions <- predict(mdl, data.matrix(test_set %>% select(all_of(explanatory_variables))))
+  val_features   <- test_set %>% select(all_of(mdl$feature_names)) %>% data.matrix()
+  val_predictions = predict(mdl,val_features,reshape=T)
+  val_predictions = as.data.frame(val_predictions)
+  colnames(val_predictions) = levels(species)
+  
+  
+  # val_predictions$prediction = apply(val_predictions,1,function(x) colnames(val_predictions)[which.max(x)])
+  # val_predictions$label = levels(species)[val_labels+1]
+  
+  
+  
+  # test_features <- test_set %>% select(all_of(mdl$feature_names))
   # test_labels <- test_set[[target_variable]]
   
   # if (!is.null(target_variable_mapping)) {
   #   test_labels <- target_variable_mapping[unlist(test_labels)] %>% unname()
   # }
   
-  test_predictions <- predict(mdl, data.matrix(test_features))
+  # test_predictions <- predict(mdl, data.matrix(test_features))
   
-  results <- list()
-  results[['test_predictions']] <- 
-    tibble(pred = test_predictions#, 
-           # actual = test_labels
-           ) #%>% 
-    # mutate(actual_aux = test_set[[target_variable]] %>% as.character() %>% paste(actual))
+  # results <- list()
+  # results[['test_predictions']] <- 
+  #   tibble(pred = test_predictions#, 
+  #          # actual = test_labels
+  #          ) #%>% 
+  #   # mutate(actual_aux = test_set[[target_variable]] %>% as.character() %>% paste(actual))
+  # 
+  # results
   
-  results
+  val_predictions
   
 }
 
@@ -295,4 +309,3 @@ calc_mode <- function(x){
   # Return the value with the highest occurrence
   distinct_values[which.max(distinct_tabulate)]
 }
-
