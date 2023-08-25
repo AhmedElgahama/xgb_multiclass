@@ -258,14 +258,16 @@ print("step 4")
   print("step 8")
   ## Saving other features with the model to use in test and serve
   trained_model$exp_vars <- exp_vars
-  # trained_model$target_class <- target_class
-  # trained_model$other_class <- other_class
+print("step 9")
   trained_model$id_column <- id_column
+print("step 10")
   trained_model$variables_to_encode <- variables_to_encode
+print("step 11")
   trained_model$encodings <- encodings
+print("step 12")
   trained_model$num_class <- num_class
+print("step 13")
   trained_model$species <- species
-  # trained_model$best_params %>% as.data.frame() %>% print()
   print("*"*50)  
   print("*"*50)
 
