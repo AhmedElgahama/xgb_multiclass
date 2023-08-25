@@ -63,7 +63,7 @@ tester <- function(data_path)
   
   
   model <- trained_model$mdl
-  
+  print("prediction")
   ## Getting probability of each row for the target_class
   test_results <-
     tester_func(mdl = model,
@@ -78,7 +78,7 @@ tester <- function(data_path)
   # 
   # names(test_results)[names(test_results) == 'pred'] <- get("target_class")
   # names(test_results)[names(test_results) == 'x'] <- get("other_class")
-  
+  print(test_results)
   ## Saving ids with prediction
   predictions <- cbind(id, test_results)
   predictions %>% write.csv('/opt/model_inputs_outputs/outputs/predictions/predictions.csv', row.names=FALSE)
