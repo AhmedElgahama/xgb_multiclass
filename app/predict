@@ -64,10 +64,12 @@ tester <- function(data_path)
       mutate(across(everything(), ~ replace_na(.x, calc_mode(.x))))
     
     for (i in variables_to_encode) {
+      print(i)
       #define original categorical labels
       encoding <- encodings[[i]]
       #convert labels to numeric values
       full_data_categorical[[i]] = transform(encoding, full_data_categorical[[i]])
+print("done")
     }
     df_test <-
       cbind(id, full_data_numeric, full_data_categorical)
