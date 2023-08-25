@@ -262,6 +262,7 @@ print("step 9")
   trained_model$id_column <- id_column
 print("step 10")
   trained_model$variables_to_encode <- variables_to_encode
+  trained_model$variables_numeric <- variables_numeric
 print("step 11")
   trained_model$encodings <- encodings
 print("step 12")
