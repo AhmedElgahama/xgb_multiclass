@@ -47,10 +47,7 @@ trainer <- function(schema_path, data_path)
 {
   
   
-  ## Reading model hyperparameters
-  # hpt <- fromJSON(file = hpt_path)
- 
-  ## Reading model hyperparameters
+   ## Reading model hyperparameters
   # hpt <- fromJSON(file = hpt_path)
   
   eta_p       = 0.3
@@ -247,7 +244,7 @@ trainer <- function(schema_path, data_path)
       train_labels = train.label,
       val_labels = test.label,
       explanatory_variables = exp_vars ,
-      target_variable = 'label',
+      
       hypergrid = hypergrid,
       num_class = num_class,
       species= species
@@ -261,8 +258,9 @@ trainer <- function(schema_path, data_path)
   trained_model$id_column <- id_column
   trained_model$variables_to_encode <- variables_to_encode
   trained_model$encodings <- encodings
+  trained_model$num_class <- num_class
+  trained_model$species <- species
   # trained_model$best_params %>% as.data.frame() %>% print()
-
   print("*"*50)  
   print("*"*50)
 
