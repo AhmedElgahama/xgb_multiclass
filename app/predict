@@ -44,7 +44,7 @@ tester <- function(data_path)
   df_test             <- read_csv(data_path)
   
   id <- df_test %>% select(id_column)
-   print("prediction")
+   print("reading")
  df_test[variables_to_encode] <-
     sapply(df_test[variables_to_encode], as.character)
   df_test[variables_numeric]   <-
@@ -53,7 +53,7 @@ tester <- function(data_path)
   
   full_data_numeric <- df_test %>%
     select(-id_column, -variables_to_encode)
-  full_data_numeric <- as.data.frame(scale(full_data_numeric))
+  #full_data_numeric <- as.data.frame(scale(full_data_numeric))
   
   
   
