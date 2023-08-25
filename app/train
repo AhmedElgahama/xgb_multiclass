@@ -268,8 +268,7 @@ print("step 12")
   trained_model$num_class <- num_class
 print("step 13")
   trained_model$species <- species
-  print("*"*50)  
-  print("*"*50)
+
 
   trained_model %>% write_rds('/opt/model_inputs_outputs/model/artifacts/model.rds')
 }
