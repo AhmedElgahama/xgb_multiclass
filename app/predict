@@ -52,33 +52,21 @@ encodings <- trained_model$encodings
     sapply(df_test[variables_numeric], as.numeric)
   
   
-  full_data_numeric <- df_test %>%
-    select(-id_column, -variables_to_encode)
-  #full_data_numeric <- as.data.frame(scale(full_data_numeric))
-  
-  
-  
-  if (length(variables_to_encode) != 0)
-  {
-    full_data_categorical <-
-      df_test  %>% select(variables_to_encode) %>%
-      mutate(across(everything(), ~ replace_na(.x, calc_mode(.x))))
-    
-    for (i in variables_to_encode) {
-      print(i)
-      #define original categorical labels
-      encoding <- encodings[[i]]
-      #convert labels to numeric values
-      full_data_categorical[[i]] = transform(encoding, full_data_categorical[[i]])
-print("done")
+  ## Encode categorical features with number of training encoding
+  if (!is.null(trained_model$encodings)) {
+    encodings_tmp <-
+      trained_model$encodings %>%
+      map(function(x) {
+        if (is.data.frame(x)) {
+          x[, 2, drop = TRUE] %>% set_names(x[, 1, drop = TRUE])
+        } else {
+          x
+        }
+      })
+    for (catvar in variables_to_encode) {
+      df_test[[catvar]] <-
+        encodings_tmp[[catvar]][df_test[[catvar]] %>% as.character()]
     }
-    df_test <-
-      cbind(id, full_data_numeric, full_data_categorical)
-    
-  } else{
-    df_test <-
-      cbind(id, full_data_numeric)
-    
   }
   model <- trained_model$mdl
   
