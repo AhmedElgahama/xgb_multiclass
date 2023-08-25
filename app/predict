@@ -35,9 +35,11 @@ tester <- function(data_path)
   ## Load model and test data
   trained_model         <- read_rds('/opt/model_inputs_outputs/model/artifacts/model.rds')
   variables_to_encode   <- trained_model$variables_to_encode
-  target_class          <- trained_model$target_class
-  other_class           <- trained_model$other_class
+  # target_class          <- trained_model$target_class
+  # other_class           <- trained_model$other_class
+  species               <- trained_model$species
   id_column             <- trained_model$id_column
+  
   df_test             <- read_csv(data_path)
   
   id <- df_test %>% select(id_column)
@@ -65,16 +67,17 @@ tester <- function(data_path)
   ## Getting probability of each row for the target_class
   test_results <-
     tester_func(mdl = model,
-                test_set = df_test)
+                test_set = df_test,
+                species)
   
-  test_results <- test_results$test_predictions
-  
-  test_results <-
-    test_results %>% 
-    mutate(x = 1-pred)
-  
-  names(test_results)[names(test_results) == 'pred'] <- get("target_class")
-  names(test_results)[names(test_results) == 'x'] <- get("other_class")
+  # test_results <- test_results$test_predictions
+  # 
+  # test_results <-
+  #   test_results %>% 
+  #   mutate(x = 1-pred)
+  # 
+  # names(test_results)[names(test_results) == 'pred'] <- get("target_class")
+  # names(test_results)[names(test_results) == 'x'] <- get("other_class")
   
   ## Saving ids with prediction
   predictions <- cbind(id, test_results)
