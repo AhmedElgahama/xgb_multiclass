@@ -255,7 +255,7 @@ print("step 4")
       species= species
     )
   
-  
+  print("step 8")
   ## Saving other features with the model to use in test and serve
   trained_model$exp_vars <- exp_vars
   # trained_model$target_class <- target_class
