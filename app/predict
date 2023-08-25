@@ -38,6 +38,7 @@ tester <- function(data_path)
   variables_numeric     <- trained_model$variables_numeric
   # target_class          <- trained_model$target_class
   # other_class           <- trained_model$other_class
+encodings <- trained_model$encodings
   species               <- trained_model$species
   id_column             <- trained_model$id_column
   
