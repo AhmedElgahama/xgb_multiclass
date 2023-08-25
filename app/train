@@ -16,7 +16,7 @@ library(forcats)
 library(rjson)
 library(caTools)
 library(imputeTS)
-
+library(CatEncoders)
 options(dplyr.summarise.inform = FALSE)
 
 
