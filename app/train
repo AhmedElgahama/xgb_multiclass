@@ -114,7 +114,9 @@ trainer <- function(schema_path, data_path)
   
   full_data <-
     read_csv(data_path) %>% drop_na(target_column)
-  
+
+print("step 1")
+
   ## Changing datatype of categorical and numeric variables as received from json file
   full_data[variables_to_encode] <-
     sapply(full_data[variables_to_encode], as.character)
@@ -123,7 +125,8 @@ trainer <- function(schema_path, data_path)
   
   id     <- full_data[, id_column]
   target <- full_data[, target_column]
-  
+
+print("step 2")
   ## Impute missing values
   ## With mean for numeric fields
   ## And mode for categorical fields
@@ -137,7 +140,7 @@ trainer <- function(schema_path, data_path)
   full_data <-
     cbind(id, full_data_numeric, full_data_categorical, target)
   
-  
+  print("step 3")
   
 
   
@@ -171,7 +174,9 @@ trainer <- function(schema_path, data_path)
       cbind(id, full_data_numeric, target)
     
   }
-  
+
+
+print("step 4")
   colnames(full_data)[colnames(full_data)==get('target_column')] = "label"
   
   
@@ -185,7 +190,7 @@ trainer <- function(schema_path, data_path)
   
   full_data$label = NULL
   
-  
+  print("step 5")
   
   ## Splitting data to train and validation. 70% and 30%
   set.seed(6789)
@@ -205,7 +210,7 @@ trainer <- function(schema_path, data_path)
   # other_class <- categories[!(categories %in% target_class)]
   
   
-  
+  print("step 6")
   
   # colnames(df_train_split)[colnames(df_train_split)==get('target_column')] = "label"
   # colnames(df_val_split)[colnames(df_val_split)==get('target_column')] = "label"
@@ -234,7 +239,7 @@ trainer <- function(schema_path, data_path)
   # df_val["label"][df_val["label"] == get("target_class")] <- 1
   # df_val["label"][df_val["label"] == get("other_class")] <- 0
   num_class = length(unique(species))
-  
+  print("step 7")
   ## Training model model
   ## The return of the function is list with model
   trained_model <-
